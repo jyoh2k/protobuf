@@ -1,0 +1,48 @@
+LDFLAGS = -L/usr/local/lib `pkg-config --libs protobuf`\
+          -framework CoreFoundation
+
+CXX = g++
+CPPFLAGS += `pkg-config --cflags protobuf`
+CXXFLAGS += -std=c++11
+
+TARGET = addressbook
+          
+#GRPC_CPP_PLUGIN = grpc_cpp_plugin
+#GRPC_CPP_PLUGIN_PATH ?= `which $(GRPC_CPP_PLUGIN)`
+
+#CFLAGS += -I/usr/local/include/
+#EXTRA_LIBS += \
+# /usr/local/lib/libprotobuf.a 	\
+# /usr/local/lib/libprotoc.a
+#$(TOPDIR)/grpc-lib/libgrpc_unsecure.a 	\
+
+OBJS = addressbook.o addressbook.pb.o
+#LIBS = -lpthread -std=gnu++11
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	@echo "Creating Archive $(TARGET) ..."
+	$(CXX) $^ $(LDFLAGS) -o $@
+
+#%.o: %.cc                                                                                                       
+#	@echo "$(CPP) $*.cc ..."
+#	$(CPP) -c $*.cc
+
+#%.grpc.pb.cc: %.proto
+
+#libs
+#	protoc --grpc_out=. --plugin=protoc-gen-grpc=$(GRPC_CPP_PLUGIN) $<
+
+%.pb.cc: %.proto
+	protoc --cpp_out=. $<
+	                                                                                                           
+#$(TARGET):$(OBJ) $(TMP_IND_OBJ) $(TMP_PROTO_OBJ)
+#	@echo "Creating Archive  $(TARGET) ..."
+#	$(VERBOSE) $(CROSS_COMPILE)$(CPP) -o  $(TARGET) $(OBJ) $(IND_OBJ) $(PROTO_OBJ) $(EXTRA_OBJ) $(LIBS) $(EXTRA_LIBS) $(EXTRA_LIBS_NOREC_BEFORE) $(EXTRA_LIBS_NOREC_AFTER)
+
+clean:
+	rm -f *.pb.* $(OBJS) $(TARGET)
+#all: 
+#all: $(TARGET)
+
